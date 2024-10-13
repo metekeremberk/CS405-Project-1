@@ -211,6 +211,7 @@ void main() {
 function getChatGPTModelViewMatrix() {
 	const transformationMatrix = new Float32Array([
 		// you should paste the response of the chatGPT here:
+
 		// Row 1
 		0.1767766952966369, -0.0732233047033631, 0.3061862178478972, 0.3,
 		// Row 2
@@ -232,6 +233,28 @@ function getChatGPTModelViewMatrix() {
 function getModelViewMatrix() {
 	// calculate the model view matrix by using the transformation
 	// methods and return the modelView matrix in this method
+
+	const translationMatrix = createTranslationMatrix(0.3, -0.25, 0);
+	const scalingMatrix = createScaleMatrix(0.5, 0.5, 1);
+
+	const rad = (angle) => (angle * Math.PI) / 180;
+
+	const rotationMatrixX = createRotationMatrix_X(rad(30));
+	const rotationMatrixY = createRotationMatrix_Y(rad(45));
+	const rotationMatrixZ = createRotationMatrix_Z(rad(60));
+
+	const finalMatrix = multiplyMatrices(
+		multiplyMatrices(
+			multiplyMatrices(
+				multiplyMatrices(translationMatrix, scalingMatrix),
+				rotationMatrixZ
+			),
+			rotationMatrixY
+		),
+		rotationMatrixX
+	);
+
+	return finalMatrix;
 }
 
 /**
