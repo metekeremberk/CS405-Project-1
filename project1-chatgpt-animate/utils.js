@@ -268,4 +268,56 @@ function getModelViewMatrix() {
 function getPeriodicMovement(startTime) {
 	// this metdo should return the model view matrix at the given time
 	// to get a smooth animation
+
+	const duration = 10; // Total duration of the animation cycle in seconds
+	const currentTime = Date.now() / 1000 - startTime; // Get the elapsed time in seconds
+	const timeInCycle = currentTime % duration; // Current time within the 10-second cycle
+
+	// Define the maximum translation, rotation, and scaling based on getModelViewMatrix
+	const initialTranslation = { x: 0.3, y: -0.25, z: 0 };
+	const initialScale = { x: 0.5, y: 0.5, z: 1 };
+	const initialRotation = { x: 30, y: 45, z: 60 }; // In degrees
+
+	// Create oscillating factor based on sine wave
+	const phase =
+		timeInCycle < duration / 2
+			? timeInCycle / (duration / 2)
+			: (duration - timeInCycle) / (duration / 2);
+	const oscillatingFactor = Math.sin(phase * Math.PI);
+
+	// Interpolate translation, rotation, and scaling separately
+	const translation = createTranslationMatrix(
+		initialTranslation.x * oscillatingFactor,
+		initialTranslation.y * oscillatingFactor,
+		initialTranslation.z * oscillatingFactor
+	);
+
+	const scale = createScaleMatrix(
+		1 + (initialScale.x - 1) * oscillatingFactor,
+		1 + (initialScale.y - 1) * oscillatingFactor,
+		1 + (initialScale.z - 1) * oscillatingFactor
+	);
+
+	const rad = (angle) => (angle * Math.PI) / 180;
+
+	const rotationX = createRotationMatrix_X(
+		rad(initialRotation.x * oscillatingFactor)
+	);
+	const rotationY = createRotationMatrix_Y(
+		rad(initialRotation.y * oscillatingFactor)
+	);
+	const rotationZ = createRotationMatrix_Z(
+		rad(initialRotation.z * oscillatingFactor)
+	);
+
+	// Combine all transformations
+	const finalMatrix = multiplyMatrices(
+		multiplyMatrices(
+			multiplyMatrices(multiplyMatrices(translation, scale), rotationZ),
+			rotationY
+		),
+		rotationX
+	);
+
+	return finalMatrix;
 }
