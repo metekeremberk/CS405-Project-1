@@ -246,12 +246,12 @@ function getModelViewMatrix() {
 	const finalMatrix = multiplyMatrices(
 		multiplyMatrices(
 			multiplyMatrices(
-				multiplyMatrices(translationMatrix, scalingMatrix),
-				rotationMatrixZ
+				translationMatrix,
+				multiplyMatrices(rotationMatrixZ, rotationMatrixY)
 			),
-			rotationMatrixY
+			rotationMatrixX
 		),
-		rotationMatrixX
+		scalingMatrix
 	);
 
 	return finalMatrix;
@@ -293,9 +293,9 @@ function getPeriodicMovement(startTime) {
 	);
 
 	const scale = createScaleMatrix(
-		1 + (initialScale.x - 1) * oscillatingFactor,
-		1 + (initialScale.y - 1) * oscillatingFactor,
-		1 + (initialScale.z - 1) * oscillatingFactor
+		initialScale.x,
+		initialScale.y,
+		initialScale.z
 	);
 
 	const rad = (angle) => (angle * Math.PI) / 180;
@@ -313,10 +313,10 @@ function getPeriodicMovement(startTime) {
 	// Combine all transformations
 	const finalMatrix = multiplyMatrices(
 		multiplyMatrices(
-			multiplyMatrices(multiplyMatrices(translation, scale), rotationZ),
-			rotationY
+			multiplyMatrices(translation, multiplyMatrices(rotationZ, rotationY)),
+			rotationX
 		),
-		rotationX
+		scale
 	);
 
 	return finalMatrix;
